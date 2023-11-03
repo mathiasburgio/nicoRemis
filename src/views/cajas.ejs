@@ -1,0 +1,88 @@
+<div id="cajas" class="row">
+    <div class="col-5">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Listado</h5>
+            </div>
+            <div class="card-body">
+                <div class="border" id="" style="height: 65vh; overflow-y: scroll;">
+                    <table class="table table-sm mb-0" id="tabla-cajas">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th class="text-right">Saldo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="100%">
+                                    <button class="btn btn-primary btn-block btn-flat" name="nueva_caja">Nueva caja</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="col-7">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Registros</h5>
+            </div>
+            <div class="card-body">
+                <div class="border" style="height: 65vh; overflow-y: scroll;">
+                    <table class="table table-sm mb-0" id="tabla-registros">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Detalle</th>
+                                <th class="text-right">Monto</th>
+                                <th class="text-right">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="100%">
+                                    <button class="btn btn-flat btn-block btn-primary" name="agregar_registro">Agregar registro</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <small class="text-muted">
+                    <br>*Use <b>agregar registros</b> solo para casos no contemplados dentro del sistema, EJ. Extracción de dinero para gastos varios, ingreso de dinero extra
+                    <br>*Los registros de pago a choferes hagalo desde <b>choferes</b>
+                    <br>*Los registros de cobro a clientes hagalo desde <b>clientes</b></small>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div id="modales" class="d-none">
+    <article id="modal_agregar_registro">
+        <div class="form-group">
+            <label for="">Caja</label>
+            <input type="text" readonly class="form-control" name="nombre_caja">
+        </div>
+        <div class="form-group">
+            <label for="">Detalle</label>
+            <input type="text" class="form-control" name="detalle">
+        </div>
+        <div class="form-group">
+            <label for="">Monto</label>
+            <input type="numero" class="form-control" name="monto">
+        </div>
+        <button class="btn btn-primary btn-flat" name="registrar">Registrar</button>
+    </article>
+</div>
+<script src="/scripts/Cajas.js"></script>
+<script>
+    var cajas = null;
+    window.onload = () =>{
+        cajas = new Cajas(true);
+    }
+</script>

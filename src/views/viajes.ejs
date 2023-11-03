@@ -1,0 +1,138 @@
+<div id="viajes" class="row">
+    <div class="col-7">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Listado</h5>
+            </div>
+            <div class="card-body">
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <button class="btn btn-light btn-flat btn-sm btn-block" crud="btNew">Nuevo</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-light btn-flat btn-sm btn-block" crud="btModify">Modificar</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-light btn-flat btn-sm btn-block" disabled crud="btDelete">Eliminar</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-warning btn-flat btn-sm btn-block" name="cambiar_estado">Cambiar estado</button>
+                    </div>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <input type="search" autocomplete="off" class="form-control form-control-sm" crud="txSearch" placeholder="Buscar...">                                    
+                </div>
+
+                <div class="border" id="container-main-table" style="height: 65vh; overflow-y: scroll;">
+                    <table class="table table-sm mb-0 "></table>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="col-5">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Datos</h5>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="custom-tabs-datos" role="tabpanel">
+                        <div id="panelDatos" crud="fields">
+                            <div class="form-group">
+                                <label for="">Origen</label>
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm" autocomplete="off" name="origen"></select>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm btn-warning" name="crear-origen"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Destino</label>
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm" autocomplete="off" name="destino"></select>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm btn-warning" name="crear-destino"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Fecha de partida</label>
+                                <input type="datetime-local" class="form-control form-control-sm" autocomplete="off" name="fechaPartida">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Fecha de regreso</label>
+                                <input type="datetime-local" class="form-control form-control-sm" autocomplete="off" name="fechaRegreso">
+                                <small class="text-muted">Fecha en la cual el vehiculo vuelve a estar disponible para su siguiente viaje</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Kilometros a recorrer</label>
+                                <input type="text" class="form-control form-control-sm" autocomplete="off" name="kilometrosRecorrer">
+                                <small class="text-muted">Se utiliza para evaluar el próximo service</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Cliente</label>
+                                <select class="form-control form-control-sm" autocomplete="off" name="cliente"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Pasajeros (Cantidad)</label>
+                                <input type="number" class="form-control form-control-sm" autocomplete="off" name="pasajeros">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Chofer</label>
+                                <select class="form-control form-control-sm" autocomplete="off" name="chofer"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Transporte</label>
+                                <select class="form-control form-control-sm" autocomplete="off" name="transporte"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Valor viaje</label>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="number" class="form-control form-control-sm" autocomplete="off" name="valorViaje">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Comisión chofer</label>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="number" class="form-control form-control-sm" autocomplete="off" name="comisionChofer">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Anotacion</label>
+                                <textarea class="form-control form-control-sm" autocomplete="off" name="anotacion"></textarea>
+                            </div>
+                            <div class="text-right">
+                                <button class="btn btn-primary btn-flat" name="" crud="btSave">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div id="modales" class="d-none">
+    <div id="modal_cambiar_estado">
+        <button class="btn btn-flat btn-block btn-warning" name="creado" disabled>Creado</button>
+        <button class="btn btn-flat btn-block btn-warning" name="viajando" disabled>Viajando</button>
+        <button class="btn btn-flat btn-block btn-success" name="concretado" disabled>Concretado</button>
+        <button class="btn btn-flat btn-block btn-danger" name="cancelado" disabled>Cancelado</button>
+    </div>
+</div>
+<script src="/scripts/Viajes.js"></script>
+<script>
+    var viajes = null;
+    window.onload = () =>{
+        viajes = new Viajes(true);
+    }
+</script>

@@ -1,0 +1,53 @@
+<div id="index" class="row">
+    <div class="col-5">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Próximos vencimientos</h5>
+            </div>
+            <div class="card-body">
+                <div class="border">
+                    <table class="table table-sm mb-0" id="tabla-vencimientos">
+                        <thead>
+                            <tr>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="col-7">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Próximos viajes</h5>
+            </div>
+            <div class="card-body">
+                <div class="border">
+                    <table class="table table-sm mb-0" id="tabla-viajes">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Chofer</th>
+                                <th>Transporte</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+<div id="modales" class="d-none">
+</div>
+<script src="/scripts/Index.js"></script>
+<script>
+    var index = null;
+    window.onload = () =>{
+        index = new Index(true);
+    }
+</script>
