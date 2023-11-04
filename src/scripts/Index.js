@@ -78,6 +78,13 @@ class Index{
             else if(vx.estado === 2) ee = `<span class='badge badge-warning'>Viajando</span>`;
             else if(vx.estado === 3) ee = `<span class='badge badge-success'>Concretado</span>`;
             else if(vx.estado === 4) ee = `<span class='badge badge-danger'>Cancelado</span>`;
+
+            let _cobrado = `<span class='badge badge-info'>No</span>`;
+            if(vx.cobrado) _cobrado = `<span class='badge badge-success'>Si</span>`;
+
+            let _abonado = `<span class='badge badge-info'>No</span>`;
+            if(vx.abonado) _abonado = `<span class='badge badge-success'>Si</span>`;
+
             tbody += `<tr>
                 <td>
                     <span class="badge badge-info">${vx.numero}</span>
@@ -88,12 +95,8 @@ class Index{
                 <td>${vx.origen}</td>
                 <td>${vx.destino}</td>
                 <td class="text-right">${ee}</td>
-                <td class="text-right">
-                    <span class="badge badge-info">${vx.cobrado ? "Si" : "No"}</span>
-                </td>
-                <td class="text-right">
-                    <span class="badge badge-info">${vx.abonado ? "Si" : "No"}</span>
-                </td>
+                <td class="text-right">${_cobrado}</td>
+                <td class="text-right">${_abonado}</td>
             </tr>`;
         });
         $("#tabla-viajes tbody").html(tbody);
