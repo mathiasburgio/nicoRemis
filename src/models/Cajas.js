@@ -123,6 +123,24 @@ router.get("/cajas/get-registries/:cid", async (req, res)=>{
         res.json({status: 0, message: err.toString()});
     }
 });
+router.get("/cajas/get-month/:year/:month", async(req, res)=>{
+    try{
+        const mes = Number(req.params.month) || 0;
+        const anio = Number(req.params.year) || 0;
+    
+        const mes00 = (mes < 10 ? "0" + mes : "" + mes);//agrego cero inicial en caso de hacer falta
+    
+        let aux = new Date(anio, mes, 0);//notese q paso mes directamente sin restarle 1, ya que lo q me interes es siempre el mes siguiente
+        let f1 = `${anio}-${mes00}-01T00:00`;
+        let f2 = `${anio}-${mes00}-${aux.getDate()}T23:59`;
+        const filtro = { fecha: { $gte: f1, $lte: f2 } };
+        let ret = await myMongo.model("RegistroCaja").find(filtro);
+        res.json({status: 1, result: ret});
+    }catch(err){
+        console.log(err);
+        res.json({status: 0, message: err.toString()});
+    }
+})
 
 module.exports.setMongoose = (conn) =>{ 
     myMongo = conn;
