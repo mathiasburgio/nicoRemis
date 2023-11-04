@@ -53,6 +53,7 @@ const clientes = require("./src/models/Clientes");
 const cajas = require("./src/models/Cajas");
 const viajes = require("./src/models/Viajes");
 const resumen = require("./src/models/Resumen");
+const printer = require("./src/models/Printer");
 
 //cargo las conexiones
 var _conn = null;
@@ -68,6 +69,7 @@ db1.getConnection()
     cajas.setMongoose(conn);
     viajes.setMongoose(conn);
     resumen.setMongoose(conn);
+    printer.setMongoose(conn);
 });
 
 //asigno las rutas
@@ -78,13 +80,12 @@ expressApp.use( clientes.getRoutes() );
 expressApp.use( cajas.getRoutes() );
 expressApp.use( viajes.getRoutes() );
 expressApp.use( resumen.getRoutes() );
+expressApp.use( printer.getRoutes() );
 
 expressApp.get(["/", "/inicio", "/index", "/home"], async (req, res)=>{
     let datos = {};
     res.render( path.join(__dirname, "src", "views", "template.ejs"), {cuerpo: "index", titulo: "Inicio", datos: JSON.stringify(datos)} );
 })
-
-
 expressApp.get("/get-conf", async (req, res)=>{
     try{
         let ret = await fs.readFile(path.join(__dirname, "conf.json"), "utf8");
@@ -103,7 +104,6 @@ expressApp.post("/set-conf", async (req, res)=>{
         res.json({ status: 0, message: err.toString() });
     }
 });
-
 expressApp.post("/open-external", (req, res)=>{
     console.log("Abriendo => ", req.fields.url);
     shell.openExternal(req.fields.url);
