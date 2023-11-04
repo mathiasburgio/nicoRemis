@@ -222,25 +222,28 @@ class Viajes{
         });
 
         $("#modal [name='creado'], #modal [name='viajando'], #modal [name='concretado'], #modal [name='cancelado']").click(async ev=>{
-            let nuevoEstado = 0;
-            let attr = $(ev.currentTarget).attr("name");
-            console.log(attr);
-            if(attr == "creado") nuevoEstado = 1;
-            else if(attr == "viajando") nuevoEstado = 2;
-            else if(attr == "concretado") nuevoEstado = 3;
-            else if(attr == "cancelado") nuevoEstado = 4;
-
-            let ret = await $.post({
-                url: "/viajes/set-state",
-                data: {
-                    vid: this.crud.element._id,
-                    estado: nuevoEstado
-                }
-            })
-            console.log(ret);
-            this.crud.element.estado = nuevoEstado;
-            this.crud.updateTableRow();
-            modal.ocultar();
+            let ele = $(ev.currentTarget)
+            if( await modal.addAsyncPopover({querySelector: ele, type: "yesno", message: "¿Confirma el cambio de estado?"})){
+                let nuevoEstado = 0;
+                let attr = $(ev.currentTarget).attr("name");
+                console.log(attr);
+                if(attr == "creado") nuevoEstado = 1;
+                else if(attr == "viajando") nuevoEstado = 2;
+                else if(attr == "concretado") nuevoEstado = 3;
+                else if(attr == "cancelado") nuevoEstado = 4;
+    
+                let ret = await $.post({
+                    url: "/viajes/set-state",
+                    data: {
+                        vid: this.crud.element._id,
+                        estado: nuevoEstado
+                    }
+                })
+                console.log(ret);
+                this.crud.element.estado = nuevoEstado;
+                this.crud.updateTableRow();
+                modal.ocultar();
+            }
         });
     }
 }
