@@ -33,7 +33,10 @@ class Transportes{
                         }
                     }
                 }
-            ]
+            ],
+            afterSelect: e =>{
+                this.listarViajes();
+            }
         });
         this.crud.setTable($("#container-main-table"));
         this.crud.inicialize("mongodb");
@@ -167,5 +170,35 @@ class Transportes{
             listarVencimientos();
 
         });
+    }
+    async listarViajes(){
+        let ret = await $.get({ url: "/viajes/get-viajes/transporte/" + this.crud.element._id });
+        let tbody = "";
+        ret.list.forEach(vx=>{
+            let ee = "";
+            if(vx.estado === 1) ee = `<span class='badge badge-warning'>Creado</span>`;
+            else if(vx.estado === 2) ee = `<span class='badge badge-warning'>Viajando</span>`;
+            else if(vx.estado === 3) ee = `<span class='badge badge-success'>Concretado</span>`;
+            else if(vx.estado === 4) ee = `<span class='badge badge-danger'>Cancelado</span>`;
+
+            let _cobrado = `<span class='badge badge-info'>No</span>`;
+            if(vx.cobrado) _cobrado = `<span class='badge badge-success'>Si</span>`;
+
+            let _abonado = `<span class='badge badge-info'>No</span>`;
+            if(vx.abonado) _abonado = `<span class='badge badge-success'>Si</span>`;
+
+            tbody += `<tr>
+                <td>
+                    <span class="badge badge-info">${vx.numero}</span>
+                </td>
+                <td>
+                    <small>${fechas.parse2(vx.fechaPartida, "ARG_FECHA_HORA")}</small>
+                </td>
+                <td>${vx.origen}</td>
+                <td>${vx.destino}</td>
+                <td class="text-right">${ee}</td>
+            </tr>`;
+        });
+        $("#tabla-viajes tbody").html(tbody);
     }
 }
