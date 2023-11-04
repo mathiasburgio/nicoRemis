@@ -1,9 +1,11 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, shell } = require('electron');
+const { exec } = require('child_process');
 const express = require('express');
 const expressApp = express();
 const path = require("path");
 const fs = require("fs/promises");
 const formidableMiddleware = require("express-formidable");
+const fechas = require("./src/resources/Fechas");
 
 var mainWindow = null;
 
@@ -40,10 +42,7 @@ expressApp.use("/styles", express.static(__dirname + "/src/styles"));
 expressApp.use("/resources", express.static(__dirname + "/src/resources"));
 expressApp.use("/printables", express.static(__dirname + "/src/views/printables"));
 
-expressApp.get(["/", "/inicio", "/index", "/home"], (req, res)=>{
-    let datos = {};
-    res.render( path.join(__dirname, "src", "views", "template.ejs"), {cuerpo: "index", titulo: "Inicio", datos: JSON.stringify(datos)} );
-})
+
 
 
 //logica de negocio
@@ -56,9 +55,12 @@ const viajes = require("./src/models/Viajes");
 const resumen = require("./src/models/Resumen");
 
 //cargo las conexiones
+var _conn = null;
 const db1 = require("./src/models/MyMongo");
+const { compareSync } = require('bcrypt');
 db1.getConnection()
 .then(conn=>{
+    _conn = conn;
     choferes.setMongoose(conn);
     vencimientos.setMongoose(conn);
     transportes.setMongoose(conn);
@@ -77,6 +79,50 @@ expressApp.use( cajas.getRoutes() );
 expressApp.use( viajes.getRoutes() );
 expressApp.use( resumen.getRoutes() );
 
-expressApp.listen(3000, () => {
+expressApp.get(["/", "/inicio", "/index", "/home"], async (req, res)=>{
+    let datos = {};
+    res.render( path.join(__dirname, "src", "views", "template.ejs"), {cuerpo: "index", titulo: "Inicio", datos: JSON.stringify(datos)} );
+})
+
+
+expressApp.get("/get-conf", async (req, res)=>{
+    try{
+        let ret = await fs.readFile(path.join(__dirname, "conf.json"), "utf8");
+        res.json({status: 1, conf: ret});
+    }catch(err){
+        console.log(err);
+        res.json({ status: 0, message: err.toString() });
+    }
+});
+expressApp.post("/set-conf", async (req, res)=>{
+    try{
+        let ret = await fs.writeFile(path.join(__dirname, "conf.json"), req.fields.conf);
+        res.json({status: 1, ret: ret});
+    }catch(err){
+        console.log(err);
+        res.json({ status: 0, message: err.toString() });
+    }
+});
+
+expressApp.post("/open-external", (req, res)=>{
+    console.log("Abriendo => ", req.fields.url);
+    shell.openExternal(req.fields.url);
+});
+
+expressApp.listen(3000, async () => {
     console.log(`Escuchando => http://localhost:${3000}`);
+    
+    //intento hacer un backup
+    try{
+        let _conf = await fs.readFile(path.join(__dirname, "conf.json"), "utf8");
+        let conf = JSON.parse(_conf);
+        let pathMongodump = conf["path-mongodump"];
+        let pathBackup = conf["path-backup"] + "\\dbNicoRemis" + fechas.getNow().replace(":", ".").replace(" ", "_") + ".backup";
+        let comando = `"${pathMongodump}" --db dbNicoRemis --gzip --archive=${pathBackup}`;
+        exec(comando, (error, stdout, stderr) => {
+            //console.log(error, stdout, stderr);
+        })
+    }catch(err){
+
+    }
 });

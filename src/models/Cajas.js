@@ -83,7 +83,7 @@ router.post("/cajas/save", async(req, res)=>{
             await caja.save();
             res.json({status:1, caja: caja});
         }else{
-            console.log(req.fields);
+            //console.log(req.fields);
             await myMongo.model("Caja").updateOne({_id: req.fields._id}, {
                 nombre: req.fields.nombre,
                 activa: req.fields.activa,

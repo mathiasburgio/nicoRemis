@@ -176,13 +176,14 @@ class Helpers{
     }
 
     //EXCLUSIVO NICO REMIS
-    removeCinta(){
+    removeCinta(cb){
         setTimeout(()=>{
             $("#cinta").animate({
                 left: "-100%"
             }, "fast", ()=> {
                 $("#cinta").remove()
                 $("#contenedor-cuerpo").removeClass("d-none");
+                if(cb) cb();
             });
         },1200);
     }

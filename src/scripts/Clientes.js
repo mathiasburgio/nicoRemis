@@ -8,9 +8,9 @@ class Clientes{
     async initHTML(){
         $("[nav='clientes'] a").addClass("active")
         let _clientes = await $.get({url: "/clientes/get-list"});
-        _clientes.list.forEach(lx=>{
+        /* _clientes.list.forEach(lx=>{
             lx.saldo = _clientes.saldos[lx._id] || 0;
-        });
+        }); */
         this.list = _clientes.list;
 
         this.crud = new SimpleCRUD({
@@ -22,14 +22,14 @@ class Clientes{
                     prop: "nombre",
                     width: "calc(100% - 100px)"
                 },
-                {
+                /* {
                     label: "Saldo",
                     prop: "saldo",
                     right: true,
                     fn: (e,f) =>{
                         return `<span class="badge badge-${e > 0 ? "danger" : "success"}">${e}</span>`
                     }
-                }
+                } */
             ]
         });
         this.crud.setTable($("#container-main-table"));

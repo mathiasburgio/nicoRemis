@@ -7,9 +7,11 @@
             <div class="card-body">
                 <div class="border">
                     <table class="table table-sm mb-0" id="tabla-vencimientos">
-                        <thead>
+                        <thead class="thead-dark">
                             <tr>
-                                <th></th>
+                                <th>Detalle</th>
+                                <th>Servicio</th>
+                                <th class="text-right">Vencimiento</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -17,34 +19,84 @@
                 </div>
             </div>
         </article>
-    </div>
-    <div class="col-7">
-        <article class="card card-primary card-outline">
+        <article class="card card-primary card-outline mt-3">
             <div class="card-header">
-                <h5 class="m-0">Próximos viajes</h5>
+                <h5 class="m-0">Services vehículos</h5>
             </div>
             <div class="card-body">
                 <div class="border">
-                    <table class="table table-sm mb-0" id="tabla-viajes">
+                    <table class="table table-sm mb-0" id="tabla-services">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Fecha</th>
-                                <th>Origen</th>
-                                <th>Destino</th>
-                                <th>Chofer</th>
-                                <th>Transporte</th>
+                                <th>Nombre</th>
+                                <th class="text-right">Km</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
+                <small class="text-muted">Km hasta el proximo servicio</small>
+            </div>
+        </article>
+        <button class="btn btn-warning btn-block btn-flat" name="configuracion"><i class="fas fa-cogs"></i> Configuración general</button>
+    </div>
+    <div class="col-7">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Viajes</h5>
+            </div>
+            <div class="card-body">
+                <input type="month" name="mes" class="form-control mb-3">
+                <div class="border" style="height: 65vh;">
+                    <div id="grilla">
+                        <table class="table table-sm mb-0" id="tabla-viajes" style="font-size: 0.8rem;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Fecha</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th class="text-right">Estado</th>
+                                    <th class="text-right">Cob.</th>
+                                    <th class="text-right">Abo.</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </article>
     </div>
 </div>
 <div id="modales" class="d-none">
+    <div id="modal_configuracion">
+        <div class="row lista">
+            <div class="col-4 my-2">
+                <input type="text" name="llave" readonly class="form-control" value="path-mongodump">
+            </div>
+            <div class="col-8 my-2">
+                <input type="text" name="valor" class="form-control" placeholder="C:\Program Files\MongoDB\Tools\100\bin\mongodump.exe">
+            </div>
+            <div class="col-4 my-2">
+                <input type="text" name="llave" readonly class="form-control" value="path-backup">
+            </div>
+            <div class="col-8 my-2">
+                <input type="text" name="valor" class="form-control" placeholder="C:\Users\{usuario}\Desktop">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-success btn-block btn-flat" name="agregar_prop">Agregar par (llave, valor)</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary btn-block btn-flat" name="guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="/scripts/Index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
 <script>
     var index = null;
     window.onload = () =>{

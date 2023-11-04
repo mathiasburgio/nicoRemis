@@ -36,8 +36,7 @@ router.get("/clientes/get-list", async (req, res)=>{
         if(req.query.activos) query.activo = true;
 
         let ret = await myMongo.model("Cliente").find(query);
-        let saldos = {};
-        res.json({status: 1, list: ret, saldos});
+        res.json({status: 1, list: ret});
     }catch(err){
         console.log(err);
         res.json({status: 0, message: err.toString()});

@@ -158,6 +158,7 @@ class Transportes{
                     model: "transporte",
                     nombre: nombre,
                     oid: this.crud.element._id,
+                    nombreReferencia: this.crud.element.nombre,
                     fecha: fechaVencimiento
                 }
             })

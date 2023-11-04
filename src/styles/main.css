@@ -7,7 +7,10 @@
     border-bottom: solid 2px dodgerblue;
     margin-bottom: 1rem;
 }
-.dark-mode .table-info, .dark-mode .table-info:hover{
+.dark-mode .table-info, .dark-mode .table-info:hover,
+.dark-mode .table-warning, .dark-mode .table-warning:hover,
+.dark-mode .table-success, .dark-mode .table-success:hover
+{
     color: black !important;
 }
 #cinta{

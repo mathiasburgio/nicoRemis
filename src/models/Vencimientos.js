@@ -10,6 +10,7 @@ const mixed = mongoose.Schema.Types.Mixed;
 const vencimientoSchema = new mongoose.Schema({
     model: String,
     oid: oid,
+    nombreReferencia: String, //nombre del vehiculo o del chofer, redundacia para no tener q hacer una busqueda cruzada
     nombre: String,
     fecha: String,
     detalle: String,
@@ -54,11 +55,12 @@ router.post("/vencimientos/insert", async (req, res)=>{
         }, {
             activo: false
         })
-        console.log(ret);
+        //console.log(ret);
 
         let venc = myMongo.model("Vencimiento")({
             model: req.fields.model,
             oid: req.fields.oid,
+            nombreReferencia: req.fields.nombreReferencia,
             nombre: req.fields.nombre,
             fecha: req.fields.fecha,
             detalle: req.fields.detalle || "",

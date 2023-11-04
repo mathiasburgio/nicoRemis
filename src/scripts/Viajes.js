@@ -163,8 +163,14 @@ class Viajes{
                      data =>             |--------|
                     */
                      comparte = true;
+                }else if(data.fechaPartida < guardado.fechaPartida && data.fechaRegreso > guardado.fechaRegreso){
+                    /*
+                     guardado =>    |----|
+                     data =>     |----------|
+                    */
+                     comparte = true;
                 }
-                if(comparte && guardado.estado != 4 && data._id  != guardado._id){
+                if(comparte && (guardado.estado == 1 || guardado.estado == 2) && data._id  != guardado._id){
                     if(data.chofer == guardado.chofer) throw `ERROR<br>El <b>chofer</b> ya tiene un viaje programado para esa fecha <b>VIAJE: #${guardado.numero}</b>`;
                     if(data.transporte == guardado.transporte) throw `ERROR<br>El <b>transporte</b> ya tiene un viaje programado para esa fecha <b>VIAJE: #${guardado.numero}</b>`;
                 }
