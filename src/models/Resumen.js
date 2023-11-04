@@ -4,6 +4,8 @@ const path = require("path")
 const fs = require("fs/promises");
 const mongoose = require("mongoose");
 
+var MyMongo = null;
+
 router.get("/resumen", async (req, res)=>{
     try{
         let datos = {};
