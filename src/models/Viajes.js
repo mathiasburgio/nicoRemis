@@ -146,6 +146,20 @@ router.post("/viajes/set-state", async(req, res)=>{
         res.json({status: 0, message: err.toString()});
     }
 });
+router.get("/viajes/get-viajes/:model/:oid", async(req, res)=>{
+    try{
+        let model = req.params.model; //chofer, transporte, cliente
+        let oid = req.params.oid;
+        let query = {};
+        query[model] = oid;
+        
+        let ret = await myMongo.model("Viaje").find(query);
+        res.json({status: 1, list: ret});
+    }catch(err){
+        console.log(err);
+        res.json({status: 0, message: err.toString()});
+    }
+})
 
 module.exports.setMongoose = (conn) =>{ 
     myMongo = conn;
