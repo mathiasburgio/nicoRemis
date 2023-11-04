@@ -132,7 +132,14 @@ router.post("/viajes/save", async(req, res)=>{
 router.post("/viajes/set-state", async(req, res)=>{
     try{
         let ret = await myMongo.model("Viaje")
-        .updateOne({_id: req.fields.vid}, {estado: req.fields.estado});
+        .findOneAndUpdate({_id: req.fields.vid}, {estado: req.fields.estado});
+
+        if(req.fields.estado == 3){
+            let ret2 = await myMongo.model("Transporte").updateOne(
+                {_id: ret.transporte}, 
+                { $inc: { proximoService: -ret.kilometrosRecorrer } 
+            });
+        }
         res.json({status: 1});
     }catch(err){
         console.log(err);
