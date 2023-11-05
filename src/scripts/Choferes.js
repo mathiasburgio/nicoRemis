@@ -181,20 +181,21 @@ class Choferes{
             else if(f1 < f2) return -1;
             return 0;
         }).forEach(vx=>{
-            if( vx.valorViaje && vx.estado === 3 ){//es viaje
-                
-                saldo = saldo + vx.comisionChofer;
-                    
-                tbody += `<tr>
-                    <td>
-                        <small>${fechas.parse2(vx.fechaPartida, "ARG_FECHA_HORA")}</small>
-                    </td>
-                    <td>
-                        Viaje #${vx.numero} dest. ${vx.destino}
-                    </td>
-                    <td class="text-right">${vx.comisionChofer}</td>
-                    <td class="text-right table-warning font-weight-bold">${saldo}</td>
-                </tr>`;
+            if( vx.valorViaje){//es viaje
+                if( vx.estado === 3 ){//solo viajes concretados
+                    saldo = saldo + vx.comisionChofer;
+                        
+                    tbody += `<tr>
+                        <td>
+                            <small>${fechas.parse2(vx.fechaPartida, "ARG_FECHA_HORA")}</small>
+                        </td>
+                        <td>
+                            Viaje #${vx.numero} dest. ${vx.destino}
+                        </td>
+                        <td class="text-right">${vx.comisionChofer}</td>
+                        <td class="text-right table-warning font-weight-bold">${saldo}</td>
+                    </tr>`;
+                }
             }else{//es registroCaja
 
                 saldo = saldo + vx.monto;
