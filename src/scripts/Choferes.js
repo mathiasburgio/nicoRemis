@@ -35,7 +35,7 @@ class Choferes{
                 }
             ],
             afterSelect: e =>{
-                this.listarViajes();
+                this.listarCtaCte();
             }
         });
         this.crud.setTable($("#container-main-table"));
@@ -168,7 +168,7 @@ class Choferes{
 
         });
     }
-    async listarViajes(){
+    async listarCtaCte(){
         this.registrosViajes = (await $.get({ url: "/viajes/get-viajes/chofer/" + this.crud.element._id })).list;
         this.registrosAbonosViajes = (await $.get({ url: "/cajas/chofer/" + this.crud.element._id })).result;
 
