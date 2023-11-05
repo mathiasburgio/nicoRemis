@@ -3,11 +3,19 @@ const { exec } = require('child_process');
 const express = require('express');
 const expressApp = express();
 const path = require("path");
-const fs = require("fs/promises");
+const fs = require("fs");
 const formidableMiddleware = require("express-formidable");
 const fechas = require("./src/resources/Fechas");
 
 var mainWindow = null;
+
+let conf = null;
+try{
+    let ret = fs.readFileSync( path.join(__dirname, "conf.json"), "utf8" );
+    conf = JSON.parse( ret );
+}catch(err){
+
+}
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -41,13 +49,6 @@ expressApp.use("/scripts", express.static(__dirname + "/src/scripts"));
 expressApp.use("/styles", express.static(__dirname + "/src/styles"));
 expressApp.use("/resources", express.static(__dirname + "/src/resources"));
 expressApp.use("/printables", express.static(__dirname + "/src/views/printables"));
-
-let conf = null;
-try{
-    conf = JSON.parse( await fs.readFile(path.join(__dirname, "conf.json"), "utf8") );
-}catch(err){
-    //no se pudo obtener la configuracion
-}
 
 
 //logica de negocio
@@ -92,18 +93,18 @@ expressApp.get(["/", "/inicio", "/index", "/home"], async (req, res)=>{
         res.send("Licencia de prueba vencida");
     }
 })
-expressApp.get("/get-conf", async (req, res)=>{
+expressApp.get("/get-conf", (req, res)=>{
     try{
-        let ret = await fs.readFile(path.join(__dirname, "conf.json"), "utf8");
+        let ret = fs.readFileSync(path.join(__dirname, "conf.json"), "utf8");
         res.json({status: 1, conf: ret});
     }catch(err){
         console.log(err);
         res.json({ status: 0, message: err.toString() });
     }
 });
-expressApp.post("/set-conf", async (req, res)=>{
+expressApp.post("/set-conf", (req, res)=>{
     try{
-        let ret = await fs.writeFile(path.join(__dirname, "conf.json"), req.fields.conf);
+        let ret = fs.writeFileSync(path.join(__dirname, "conf.json"), req.fields.conf);
         conf = JSON.parse(req.fields.conf);
         res.json({status: 1, ret: ret});
     }catch(err){
