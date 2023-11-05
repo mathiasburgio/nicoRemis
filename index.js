@@ -42,7 +42,12 @@ expressApp.use("/styles", express.static(__dirname + "/src/styles"));
 expressApp.use("/resources", express.static(__dirname + "/src/resources"));
 expressApp.use("/printables", express.static(__dirname + "/src/views/printables"));
 
-
+let conf = null;
+try{
+    conf = JSON.parse( await fs.readFile(path.join(__dirname, "conf.json"), "utf8") );
+}catch(err){
+    //no se pudo obtener la configuracion
+}
 
 
 //logica de negocio
@@ -79,8 +84,13 @@ expressApp.use( viajes.getRoutes() );
 expressApp.use( resumen.getRoutes() );
 
 expressApp.get(["/", "/inicio", "/index", "/home"], async (req, res)=>{
-    let datos = {};
-    res.render( path.join(__dirname, "src", "views", "template.ejs"), {cuerpo: "index", titulo: "Inicio", datos: JSON.stringify(datos)} );
+    let now = fechas.getNow();
+    if( now < "2024-01-01" || (typeof conf != "undefined" && typeof conf["licencia"] != "undefined" && conf["licencia"] == "mathias") ){
+        let datos = {};
+        res.render( path.join(__dirname, "src", "views", "template.ejs"), {cuerpo: "index", titulo: "Inicio", datos: JSON.stringify(datos)} );
+    }else{
+        res.send("Licencia de prueba vencida");
+    }
 })
 expressApp.get("/get-conf", async (req, res)=>{
     try{
@@ -94,6 +104,7 @@ expressApp.get("/get-conf", async (req, res)=>{
 expressApp.post("/set-conf", async (req, res)=>{
     try{
         let ret = await fs.writeFile(path.join(__dirname, "conf.json"), req.fields.conf);
+        conf = JSON.parse(req.fields.conf);
         res.json({status: 1, ret: ret});
     }catch(err){
         console.log(err);
@@ -110,11 +121,9 @@ expressApp.post("/imprimir", (req, res)=>{
 
 expressApp.listen(3000, async () => {
     console.log(`Escuchando => http://localhost:${3000}`);
-    
+
     //intento hacer un backup
     try{
-        let _conf = await fs.readFile(path.join(__dirname, "conf.json"), "utf8");
-        let conf = JSON.parse(_conf);
         let pathMongodump = conf["path-mongodump"];
         let pathBackup = conf["path-backup"] + "\\dbNicoRemis" + fechas.getNow().replace(":", ".").replace(" ", "_") + ".backup";
         let comando = `"${pathMongodump}" --db dbNicoRemis --gzip --archive=${pathBackup}`;
