@@ -141,6 +141,15 @@ router.get("/cajas/get-month/:year/:month", async(req, res)=>{
         res.json({status: 0, message: err.toString()});
     }
 })
+router.get("/cajas/:model/:oid", async(req, res)=>{
+    try{
+        let ret = await myMongo.model("RegistroCaja").find({ model: req.params.model, modelOid: req.params.oid });
+        res.json({status:1, result: ret});
+    }catch(err){
+        console.log(err);
+        res.json({status: 0, message: err.toString()});
+    }
+})
 
 module.exports.setMongoose = (conn) =>{ 
     myMongo = conn;
