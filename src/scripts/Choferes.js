@@ -3,6 +3,8 @@ class Choferes{
         this.list = [];
         this.bandera = false;
         this.crud = null;
+        this.registrosViajes = [];
+        this.registrosAbonosViajes = [];
         if(initHTML) this.initHTML();
     }
     async initHTML(){
@@ -31,7 +33,10 @@ class Choferes{
                         }
                     }
                 }
-            ]
+            ],
+            afterSelect: e =>{
+                this.listarViajes();
+            }
         });
         this.crud.setTable($("#container-main-table"));
         this.crud.inicialize("mongodb");
@@ -162,5 +167,48 @@ class Choferes{
             listarVencimientos();
 
         });
+    }
+    async listarViajes(){
+        this.registrosViajes = (await $.get({ url: "/viajes/get-viajes/chofer/" + this.crud.element._id })).list;
+        this.registrosAbonosViajes = (await $.get({ url: "/cajas/chofer/" + this.crud.element._id })).result;
+
+        let saldo = 0;
+        let tbody = "";
+        this.registrosViajes.concat(this.registrosAbonosViajes).sort((a, b)=>{
+            let f1 = (a.fechaPartida ? a.fechaPartida : a.fecha);
+            let f2 = (b.fechaPartida ? b.fechaPartida : b.fecha);
+            if(f1 > f2) return 1;
+            else if(f1 < f2) return -1;
+            return 0;
+        }).forEach(vx=>{
+            if( vx.valorViaje && vx.estado === 3 ){//es viaje
+                
+                saldo = saldo + vx.comisionChofer;
+                    
+                tbody += `<tr>
+                    <td>
+                        <small>${fechas.parse2(vx.fechaPartida, "ARG_FECHA_HORA")}</small>
+                    </td>
+                    <td>
+                        Viaje #${vx.numero} dest. ${vx.destino}
+                    </td>
+                    <td class="text-right">${vx.comisionChofer}</td>
+                    <td class="text-right table-warning font-weight-bold">${saldo}</td>
+                </tr>`;
+            }else{//es registroCaja
+
+                saldo = saldo + vx.comisionChofer;
+
+                tbody += `<tr>
+                    <td>
+                        <small>${fechas.parse2(vx.fecha, "ARG_FECHA_HORA")}</small>
+                    </td>
+                    <td>${vx.detalle}</td>
+                    <td class="text-right">${vx.monto}</td>
+                    <td class="text-right table-warning font-weight-bold">${saldo}</td>
+                </tr>`;
+            }
+        })
+        $("#tabla-cta-cte tbody").html(tbody);
     }
 }
