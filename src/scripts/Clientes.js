@@ -30,7 +30,10 @@ class Clientes{
                         return `<span class="badge badge-${e > 0 ? "danger" : "success"}">${e}</span>`
                     }
                 } */
-            ]
+            ],
+            afterSelect: e =>{
+                this.listarCtaCte();
+            }
         });
         this.crud.setTable($("#container-main-table"));
         this.crud.inicialize("mongodb");
@@ -87,5 +90,49 @@ class Clientes{
         }catch(err){
             modal.mensaje(err.toString());
         }
+    }
+    async listarCtaCte(){
+        this.registrosViajes = (await $.get({ url: "/viajes/get-viajes/cliente/" + this.crud.element._id })).list;
+        this.registrosAbonosViajes = (await $.get({ url: "/cajas/cliente/" + this.crud.element._id })).result;
+
+        let saldo = 0;
+        let tbody = "";
+        this.registrosViajes.concat(this.registrosAbonosViajes).sort((a, b)=>{
+            let f1 = (a.fechaPartida ? a.fechaPartida : a.fecha);
+            let f2 = (b.fechaPartida ? b.fechaPartida : b.fecha);
+            if(f1 > f2) return 1;
+            else if(f1 < f2) return -1;
+            return 0;
+        }).forEach(vx=>{
+            if( vx.valorViaje){//es viaje
+                if( vx.estado === 3 ){//solo viajes concretados
+                    saldo = saldo + vx.valorViaje;
+                        
+                    tbody += `<tr>
+                        <td>
+                            <small>${fechas.parse2(vx.fechaPartida, "ARG_FECHA_HORA")}</small>
+                        </td>
+                        <td>
+                            Viaje #${vx.numero} dest. ${vx.destino}
+                        </td>
+                        <td class="text-right">${vx.valorViaje}</td>
+                        <td class="text-right table-warning font-weight-bold">${saldo}</td>
+                    </tr>`;
+                }
+            }else{//es registroCaja
+
+                saldo = saldo + vx.monto;
+
+                tbody += `<tr>
+                    <td>
+                        <small>${fechas.parse2(vx.fecha, "ARG_FECHA_HORA")}</small>
+                    </td>
+                    <td>${vx.detalle}</td>
+                    <td class="text-right">${vx.monto}</td>
+                    <td class="text-right table-warning font-weight-bold">${saldo}</td>
+                </tr>`;
+            }
+        })
+        $("#tabla-cta-cte tbody").html(tbody);
     }
 }
