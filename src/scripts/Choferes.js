@@ -197,7 +197,7 @@ class Choferes{
                 </tr>`;
             }else{//es registroCaja
 
-                saldo = saldo + vx.comisionChofer;
+                saldo = saldo + vx.monto;
 
                 tbody += `<tr>
                     <td>
