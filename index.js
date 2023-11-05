@@ -53,12 +53,10 @@ const clientes = require("./src/models/Clientes");
 const cajas = require("./src/models/Cajas");
 const viajes = require("./src/models/Viajes");
 const resumen = require("./src/models/Resumen");
-const printer = require("./src/models/Printer");
 
 //cargo las conexiones
 var _conn = null;
 const db1 = require("./src/models/MyMongo");
-const { compareSync } = require('bcrypt');
 db1.getConnection()
 .then(conn=>{
     _conn = conn;
@@ -69,7 +67,6 @@ db1.getConnection()
     cajas.setMongoose(conn);
     viajes.setMongoose(conn);
     resumen.setMongoose(conn);
-    printer.setMongoose(conn);
 });
 
 //asigno las rutas
@@ -80,7 +77,6 @@ expressApp.use( clientes.getRoutes() );
 expressApp.use( cajas.getRoutes() );
 expressApp.use( viajes.getRoutes() );
 expressApp.use( resumen.getRoutes() );
-expressApp.use( printer.getRoutes() );
 
 expressApp.get(["/", "/inicio", "/index", "/home"], async (req, res)=>{
     let datos = {};
@@ -107,6 +103,9 @@ expressApp.post("/set-conf", async (req, res)=>{
 expressApp.post("/open-external", (req, res)=>{
     console.log("Abriendo => ", req.fields.url);
     shell.openExternal(req.fields.url);
+});
+expressApp.post("/imprimir", (req, res)=>{
+    shell.openExternal(`http://localhost:3000/printables/${req.fields.documento}`);
 });
 
 expressApp.listen(3000, async () => {
