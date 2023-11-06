@@ -124,6 +124,7 @@ class Cajas{
         let saldo = 0;
         let tbody = "";
         this.registros.forEach(rx=>{
+            if(rx.model == "chofer") rx.monto = rx.monto * -1;//resto pago a choferes
             saldo = G.decimales(saldo + rx.monto);
             tbody += `<tr>
                 <td><small>${fechas.parse2(rx.fecha, "ARG_FECHA_HORA")}</small></td>

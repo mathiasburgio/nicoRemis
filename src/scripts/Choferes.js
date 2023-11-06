@@ -205,7 +205,7 @@ class Choferes{
                     </tr>`;
                 }
             }else{//es registroCaja
-
+                vx.monto = vx.monto * -1;
                 saldo = saldo + vx.monto;
 
                 tbody += `<tr>
