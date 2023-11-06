@@ -25,7 +25,7 @@ const createWindow = () => {
     })
 
     mainWindow.loadURL('http://localhost:3000/');
-    mainWindow.webContents.openDevTools();
+    if(conf && conf["env"] && conf["env"].indexOf("dev") > -1) mainWindow.webContents.openDevTools();
     mainWindow.on("closed", ()=> mainWindow = null);
 }
 
