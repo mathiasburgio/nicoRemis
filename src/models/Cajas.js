@@ -20,7 +20,7 @@ const registroCajaSchema = new mongoose.Schema({
     caja: oid,
     model: String,//cliente, chofer, etc
     modelOid: oid,//_id del modelo
-    viaje: Number//si esta asociado a un viaje, el numero de viaje
+    viajes: [Number]//si esta asociado a un viaje, el numero de viaje
 });
 
 
@@ -105,7 +105,7 @@ router.post("/cajas/add-registry", async(req, res)=>{
             caja: req.fields.cid,
             model: req.fields.model || "default",
             modelOid: req.fields.modelOid || null,
-            viaje: req.fields.viaje || 0,
+            viajes: JSON.parse(req.fields.viajes || "[]"),
         });
         await reg.save();
         res.json({status:1, registro: reg});
