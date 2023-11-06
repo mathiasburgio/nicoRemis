@@ -1,0 +1,16 @@
+{
+    "appId": "com.nubelar.nicoRemis",
+    "productName": "NicoRemis",
+    "directories": {
+      "output": "./dist"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": "nsis",
+      "icon": "src/resources/icono6.ico"
+    }
+  }
