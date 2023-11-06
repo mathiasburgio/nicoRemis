@@ -20,7 +20,7 @@ const registroCajaSchema = new mongoose.Schema({
     caja: oid,
     model: String,//cliente, chofer, etc
     modelOid: oid,//_id del modelo
-    viajes: [Number]//si esta asociado a un viaje, el numero de viaje
+    viajes: [oid]//si esta asociado a un viaje, el _id de viaje
 });
 
 

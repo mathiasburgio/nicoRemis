@@ -1,13 +1,17 @@
 class Clientes{
     constructor(initHTML = false){
         this.list = [];
+        this.cajas = [];
         this.bandera = false;
         this.crud = null;
+        this.registrosViajes = [];
+        this.registrosAbonosViajes = [];
         if(initHTML) this.initHTML();
     }
     async initHTML(){
         $("[nav='clientes'] a").addClass("active")
         let _clientes = await $.get({url: "/clientes/get-list"});
+        this.cajas = (await $.get({url: "/cajas/get-list?as=array"})).list;
         /* _clientes.list.forEach(lx=>{
             lx.saldo = _clientes.saldos[lx._id] || 0;
         }); */
@@ -65,6 +69,12 @@ class Clientes{
                 this.crud.search(v);
             }
         });
+
+        $("[name='cobrar_viajes']").click(ev=>{
+            if (typeof this.crud.element == "undefined") { modal.mensaje("Seleccione un cliente para realizar esta acción"); return; }
+            this.cobrarCta();
+        });
+
         G.removeCinta();
     }
     async onSave(){
@@ -134,5 +144,100 @@ class Clientes{
             }
         })
         $("#tabla-cta-cte tbody").html(tbody);
+    }
+    async cobrarCta(){
+        let foo = $("#modal_cobrar_viajes").html();
+        modal.mostrar({
+            titulo: "Cobrar",
+            cuerpo: foo,
+            tamano: "modal-lg",
+            botones: "volver"
+        });
+
+        let tbody = "";
+        this.registrosViajes.forEach(vx=>{
+            if(vx.estado == 3 && vx.cobrado == false){
+                tbody += `<tr _id="${vx._id}">
+                    <td><i class="fas fa-square"></i></td>
+                    <td><small>${fechas.parse2(vx.fecha, "ARG_FECHA_HORA")}</small></td>
+                    <td>${vx.origen}</td>
+                    <td>${vx.destino}</td>
+                    <td class="text-right">${vx.valorViaje}</td>
+                </tr>`
+            }
+        });
+        $("#modal table tbody").html(tbody);
+
+        $("#modal [name='caja']").html( `<option value="0">-SELECCIONAR-</option>` + G.getOptions({arr: this.cajas, value: "_id", label: "nombre"}) );
+
+        let total = 0;
+        let viajesCobrar = [];
+        $("#modal tbody tr").click(ev=>{
+            let row = $(ev.currentTarget);
+            let i = row.find("i:eq(0)");
+            let _id = row.attr("_id");
+            if( i.hasClass("fa-square-check") ){
+                i.removeClass("fa-square-check").addClass("fa-square");
+                viajesCobrar = viajesCobrar.filter(v=>v._id == _id);
+            }else{
+                i.addClass("fa-square-check").removeClass("fa-square");
+                viajesCobrar.push(this.registrosViajes.find(v=>v._id == _id));
+            }
+            
+            total = viajesCobrar.reduce((acc, cur)=>{
+                acc += cur.valorViaje;
+                return acc;
+            },0)
+            $("#modal [name='total']").val(total);
+        });
+
+        $("#modal [name='cobrar']").click(async ev=>{
+            let ele = $(ev.currentTarget);
+
+            if(viajesCobrar.length <= 0){
+                modal.addAsyncPopover({querySelector: ele, message: "Seleccione uno o mas viajes para cobrar"});
+                return;
+            }
+            
+            if(total <= 0){
+                modal.addAsyncPopover({querySelector: ele, message: "El monto a cobrar no puede ser menor o igual a cero"});
+                return;
+            }
+
+            let cid = $("#modal [name='caja']").val();
+            if(cid == "0"){ 
+                modal.addAsyncPopover({querySelector: ele, message: "Caja no válida"});
+                return;
+            }
+
+            let aux = await modal.addAsyncPopover({querySelector: ele, type: "yesno", message: "¿Confirma el cobro?"})
+            if(!aux) return;
+
+
+            let ret = await $.post({
+                url: "/cajas/add-registry",
+                data: {
+                    detalle: "Cobro de viajes",
+                    monto: total,
+                    cid: cid,
+                    model: "cliente",
+                    modelOid: this.crud.element._id,
+                    viajes: JSON.stringify( viajesCobrar.map(v=>v._id) )
+                }
+            });
+
+            for(let v in viajesCobrar){
+                await $.post({
+                    url: "/viajes/set-pagado-cobrado",
+                    data: {
+                        vid: viajesCobrar[v]._id,
+                        prop: "cobrado",
+                        cobrado: true
+                    }
+                })
+            }
+            this.listarCtaCte();
+            modal.ocultar();
+        })
     }
 }

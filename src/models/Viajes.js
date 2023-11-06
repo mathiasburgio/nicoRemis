@@ -160,6 +160,19 @@ router.get("/viajes/get-viajes/:model/:oid", async(req, res)=>{
         res.json({status: 0, message: err.toString()});
     }
 })
+router.post("/viajes/set-pagado-cobrado", async(req, res)=>{
+    try{
+        if(req.fields.prop == "pagado"){
+            let ret = await myMongo.model("Viaje").updateOne({_id: req.fields.vid}, {pagado: req.fields.pagado});
+        }else if(req.fields.prop == "cobrado"){
+            let ret = await myMongo.model("Viaje").updateOne({_id: req.fields.vid}, {cobrado: req.fields.cobrado});
+        }
+        res.json({status: 1});
+    }catch(err){
+        console.log(err);
+        res.json({status: 0, message: err.toString()});
+    }
+})
 
 module.exports.setMongoose = (conn) =>{ 
     myMongo = conn;
