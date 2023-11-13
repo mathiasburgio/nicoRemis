@@ -1,6 +1,6 @@
 {
-    "appId": "com.nubelar.nicoRemis",
-    "productName": "NicoRemis",
+    "appId": "com.nubelar.nicolasRemis",
+    "productName": "NicolasRemis",
     "directories": {
       "output": "./dist"
     },
