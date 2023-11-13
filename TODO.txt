@@ -1,3 +1,4 @@
 1-Resumen con viajes, km recorridos, guita ganada por transporte, chofer, etc
 2-verificar orden re registros de cta/cte de todo tipo
 3-imprimir ctas/ctes y resumen
+4-verificar q solo se inicie una instancia del sistema

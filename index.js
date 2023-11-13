@@ -29,7 +29,9 @@ const createWindow = () => {
     mainWindow.on("closed", ()=> mainWindow = null);
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(()=>{
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
