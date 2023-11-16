@@ -30,14 +30,12 @@ class Resumen{
                     contenido: $("#grilla").html()
                 }
             })
-            console.log(response);
             let response2 = await $.post({
                 url: "/imprimir",
                 data: {
                     parametros: "?imprimir=true&cerrar=true"
                 }
             })
-            console.log(response2)
         })
 
         G.removeCinta();
