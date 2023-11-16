@@ -6,8 +6,19 @@ const path = require("path");
 const fs = require("fs");
 const formidableMiddleware = require("express-formidable");
 const fechas = require("./src/resources/Fechas");
+const axios = require("axios");
 
 var mainWindow = null;
+
+
+const uuidv4 =()=> {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
+
+const GUID = uuidv4();
 
 let conf = null;
 try{
@@ -17,16 +28,29 @@ try{
 
 }
 
-const createWindow = () => {
-    mainWindow = new BrowserWindow({
-        width: 1400,
-        height: 1050,
-        icon: __dirname + '/src/resources/icono6.png',
-    })
-
-    mainWindow.loadURL('http://localhost:3000/');
-    if(conf && conf["env"] && conf["env"].indexOf("dev") > -1) mainWindow.webContents.openDevTools();
-    mainWindow.on("closed", ()=> mainWindow = null);
+const createWindow = async () => {
+    let instanciaUnica = false;
+    try{
+        //obtengo el GUID de la instancia que esta utilizando el puerto 3000
+        let verificarGuid = await axios("http://localhost:3000/guid", {timeout: 200});
+        instanciaUnica = (verificarGuid.data == GUID);
+    }catch(err){
+        instanciaUnica = true;
+    }finally{
+        if( instanciaUnica ){
+            mainWindow = new BrowserWindow({
+                width: 1400,
+                height: 1050,
+                icon: __dirname + '/src/resources/icono6.png',
+            })
+        
+            mainWindow.loadURL('http://localhost:3000/');
+            if(conf && conf["env"] && conf["env"].indexOf("dev") > -1) mainWindow.webContents.openDevTools();
+            mainWindow.on("closed", ()=> mainWindow = null);
+        }else{
+            app.quit();
+        }
+    }
 }
 
 app.whenReady().then(()=>{
@@ -118,22 +142,48 @@ expressApp.post("/open-external", (req, res)=>{
     console.log("Abriendo => ", req.fields.url);
     shell.openExternal(req.fields.url);
 });
+//abre el navegador local para imprimir
 expressApp.post("/imprimir", (req, res)=>{
-    shell.openExternal(`http://localhost:3000/printables/${req.fields.documento}`);
+    //se puede enviar por post "parametros" => ?par1=val1&par2=val2
+    shell.openExternal(`http://localhost:3000/obtener-documento/` + (req.fields.parametros ? req.fields.parametros : ""));
+});
+expressApp.get("/ping", (req, res)=>{
+    res.send("pong")
+});
+expressApp.get("/guid", (req, res)=>{
+    res.send(GUID)
 });
 
-expressApp.listen(3000, async () => {
-    console.log(`Escuchando => http://localhost:${3000}`);
-
-    //intento hacer un backup
-    try{
-        let pathMongodump = conf["path-mongodump"];
-        let pathBackup = conf["path-backup"] + "\\dbNicoRemis" + fechas.getNow().replace(":", ".").replace(" ", "_") + ".backup";
-        let comando = `"${pathMongodump}" --db dbNicoRemis --gzip --archive=${pathBackup}`;
-        exec(comando, (error, stdout, stderr) => {
-            //console.log(error, stdout, stderr);
-        })
-    }catch(err){
-
-    }
+//guarda un archivo 'imprimir.html' el cual se abre externamente (chrome / edge) para ejecutar la tarea de impresion 
+expressApp.post("/exportar-documento", (req, res)=>{
+    /* let nombre = "expo_" + (new Date()).getTime() + ".html";  */
+    let modelo = fs.readFileSync( path.join(__dirname, "src", "views", "_modelo-impresion.html"), "utf-8");
+    let documento = modelo.replace("<!--CONTENIDO-->", req.fields.contenido);
+    fs.writeFileSync(path.join(__dirname, "imprimir.html"), documento); 
+    res.json({status: 1});
 });
+
+//obtiene el documento 'imprimir.html' para ser impreso
+expressApp.get("/obtener-documento", (req, res)=>{
+    res.sendFile( path.join(__dirname, "imprimir.html") );
+});
+
+try{
+    expressApp.listen(3000, async () => {
+        console.log(`Escuchando => http://localhost:${3000}`);
+    
+        //intento hacer un backup
+        try{
+            let pathMongodump = conf["path-mongodump"];
+            let pathBackup = conf["path-backup"] + "\\dbNicoRemis" + fechas.getNow().replace(":", ".").replace(" ", "_") + ".backup";
+            let comando = `"${pathMongodump}" --db dbNicoRemis --gzip --archive=${pathBackup}`;
+            exec(comando, (error, stdout, stderr) => {
+                //console.log(error, stdout, stderr);
+            })
+        }catch(err){
+    
+        }
+    })
+}catch(err){
+    app.quit();
+}
