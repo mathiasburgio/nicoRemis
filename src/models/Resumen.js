@@ -21,20 +21,6 @@ router.get("/resumen", async (req, res)=>{
     }
 })
 
-router.get("/resumen/get-data/:mes/:anio", async (req, res)=>{
-    try{
-        
-        let mes = Number(req.query.mes) || 0;
-        let anio = Number(req.query.anio) || 2010;
-
-        let ret = {};
-
-        res.json({status:1, ret});
-    }catch(err){
-        console.log(err);
-        res.json({status: 0, message: err.toString()});
-    }
-});
 module.exports.setMongoose = (conn) =>{ 
     myMongo = conn;
 };
