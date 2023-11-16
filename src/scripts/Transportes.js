@@ -74,6 +74,11 @@ class Transportes{
             if (typeof this.crud.element == "undefined") { modal.mensaje("Seleccione un chofer para realizar esta acción"); return; }
             this.modalVencimientos();
         });
+
+        $("[name='imprimir']").click(ev=>{
+            modal.mensaje("Para imprimir haga DOBLE CLICK desde el 1er registro que quiere imprimir");
+        })
+
         G.removeCinta();
     }
     async onSave(){
@@ -187,7 +192,7 @@ class Transportes{
             let _abonado = `<span class='badge badge-info'>No</span>`;
             if(vx.abonado) _abonado = `<span class='badge badge-success'>Si</span>`;
 
-            tbody += `<tr>
+            tbody += `<tr _id="${vx._id}">
                 <td>
                     <span class="badge badge-info">${vx.numero}</span>
                 </td>
@@ -200,5 +205,32 @@ class Transportes{
             </tr>`;
         });
         $("#tabla-viajes tbody").html(tbody);
+
+        $("#tabla-cta-cte tbody tr").dblclick(async ev=>{
+            let _id= $(ev.currentTarget).attr("_id");
+
+            let clon = $("#tabla-cta-cte").parent().clone();
+            let encontro = false;
+            clon.find("tbody tr").each((ind, rx)=>{
+                if( $(rx).attr("_id") == _id ) encontro = true;
+                if(!encontro) $(rx).addClass("d-none")
+            });
+            clon.find("tfoot").remove();
+
+            let encabezado= `<h3>RESUMEN TRANSPORTE -> ${this.crud.element.nombre}</h3>`
+
+            let response = await $.post({
+                url: "/exportar-documento",
+                data: {
+                    contenido: encabezado + clon.html()
+                }
+            })
+            let response2 = await $.post({
+                url: "/imprimir",
+                data: {
+                    parametros: "?imprimir=true&cerrar=true"
+                }
+            })
+        });
     }
 }
