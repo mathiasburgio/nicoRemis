@@ -5,7 +5,16 @@
                 <h5 class="m-0">Viajes</h5>
             </div>
             <div class="card-body">
-                <input type="month" name="mes" class="form-control mb-3">
+                <div class="row mb-3">
+                    <div class="col">
+                        <input type="month" name="mes" class="form-control">
+                    </div>
+                    <div class="col">
+                        <select name="dia" class="form-control">
+                            <option value="0">Mes completo</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="border p-3" style="height: 65vh; overflow-y: scroll;" id="grilla">
                 </div>
                 <div class="text-right mt-2">
