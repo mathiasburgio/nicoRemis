@@ -10,6 +10,7 @@ class Resumen{
 
         this.transportes = (await $.get({ url: "/transportes/get-list" })).list;
         this.choferes = (await $.get({ url: "/choferes/get-list" })).list;
+        this.cajas = (await $.get({ url: "/cajas/get-list?as=array" })).list;
         
         $("[name='mes']").val(objAhora.anio + "-" + objAhora.mes);
         $("[name='mes']").change(async ev=>{
@@ -74,16 +75,22 @@ class Resumen{
         }
         
         let previaje = JSON.parse(JSON.stringify(this.viajes));
+        let precajas = JSON.parse(JSON.stringify(this.registrosCajas));
         if(dia != 0){
             previaje = previaje.filter(v=>{
                 let ofx = fechas.parse({val: v.fechaPartida});
+                return (Number(ofx.dia) === dia);
+            })
+
+            precajas = precajas.filter(v=>{
+                let ofx = fechas.parse({val: v.fecha});
                 return (Number(ofx.dia) === dia);
             })
         }
 
 
         let html = "";
-        html += "<div class='text-center h3'>" + fechas.MONTH_NAME[Number(mes) -1] + " de " + anio + "</div>";
+        html += "<div class='text-center h3'>" + fechas.MONTH_NAME[Number(mes) -1] + " de " + anio + ( dia != 0 ? " (día " + dia + ")" : "" ) + "</div>";
         html += `<small>Impreso el ${fechas.parse2(new Date(), "ARG_FECHA_HORA")}</small>`;
         html += titulo("Viajes TOTALES");
         html += linea1("Agendados: ", previaje.length);
@@ -116,6 +123,17 @@ class Resumen{
                 html += linea1("Km. recorridos: ", _viajes.reduce((acc, v)=> acc + (v.estado == 3 ? v.kilometrosRecorrer : 0), 0));
                 html += linea1("Ingresos brutos (cobrados NICOLAS REMIS): ", _viajes.reduce((acc, v)=> acc + (v.cobrado ? v.valorViaje : 0), 0));
                 html += linea1("Ganancia chofer bruta: ", _viajes.reduce((acc, v)=> acc + v.comisionChofer, 0));
+            }
+        });
+
+        html += titulo("Cajas");
+        this.cajas.forEach(cx=>{
+            let _registroCaja = precajas.filter(v=>v.caja == cx._id);
+            if(_registroCaja.length > 0){
+                html += titulo2(cx.nombre);
+                html += linea1("Movimientos: ", _registroCaja.length);
+                html += linea1("Ingresos: ",  _registroCaja.reduce((acc, v)=> acc + (v.monto > 0 ? v.monto : 0), 0));
+                html += linea1("Egresos: ",  _registroCaja.reduce((acc, v)=> acc + (v.monto < 0 ? v.monto : 0), 0));
             }
         });
 
