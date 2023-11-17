@@ -145,6 +145,26 @@ class Cajas{
 
         $("#modal [name='nombre_caja']").val(this.cajaActual.nombre);
 
+
+        const cambiarBadgeIngresoEgreso = () =>{
+            let v = Number( $("#modal [name='monto']").val() ) || 0;
+            $("#modal [name='ingreso']").removeClass("badge-success").addClass("badge-light")
+            $("#modal [name='egreso']").removeClass("badge-danger").addClass("badge-light")
+            if(v > 0){
+                $("#modal [name='ingreso']").addClass("badge-success").removeClass("badge-light");
+            }else if(v < 0){
+                $("#modal [name='egreso']").addClass("badge-danger").removeClass("badge-light");
+            }
+        }
+
+        $("#modal [name='monto']").change(ev=>{
+            cambiarBadgeIngresoEgreso();
+                
+        }).keyup(ev=>{
+            cambiarBadgeIngresoEgreso();
+        });
+
+
         $("#modal [name='registrar']").click(async ev=>{
             let ele = $(ev.currentTarget)
             try{
