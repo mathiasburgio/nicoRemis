@@ -9,7 +9,7 @@ const fechas = require("./src/resources/Fechas");
 const axios = require("axios");
 
 var mainWindow = null;
-
+var bufferImpresion = "";
 
 const uuidv4 =()=> {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -159,13 +159,15 @@ expressApp.post("/exportar-documento", (req, res)=>{
     /* let nombre = "expo_" + (new Date()).getTime() + ".html";  */
     let modelo = fs.readFileSync( path.join(__dirname, "src", "views", "_modelo-impresion.html"), "utf-8");
     let documento = modelo.replace("<!--CONTENIDO-->", req.fields.contenido);
-    fs.writeFileSync(path.join(__dirname, "imprimir.html"), documento); 
+    bufferImpresion = documento;
+    //fs.writeFileSync(path.join(__dirname, "imprimir.html"), documento); 
     res.json({status: 1});
 });
 
 //obtiene el documento 'imprimir.html' para ser impreso
 expressApp.get("/obtener-documento", (req, res)=>{
-    res.sendFile( path.join(__dirname, "imprimir.html") );
+    res.send(bufferImpresion);
+    //res.sendFile( path.join(__dirname, "imprimir.html") );
 });
 
 try{
