@@ -174,6 +174,13 @@ class Helpers{
         let aux = this.decimales(monto / (1 + (porcentaje / 100)));
         return restar ? aux : monto - aux;
     }
+    sort(ar, prop="nombre"){
+        ar.sort((a,b)=>{
+            if(a[prop] > b[prop]) return 1;
+            else if(a[prop] < b[prop]) return -1;
+            return 0;
+        })
+    }
 
     //EXCLUSIVO NICO REMIS
     removeCinta(cb){

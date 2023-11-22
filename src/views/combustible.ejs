@@ -1,0 +1,82 @@
+<div id="combustible" class="row">
+    <div class="col-5">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Transportes</h5>
+            </div>
+            <div class="card-body">
+                <div class="border" id="" style="height: 65vh; overflow-y: scroll;">
+                    <table class="table table-sm mb-0" id="tabla-transportes">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Nombre</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="col-7">
+        <article class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="m-0">Registros</h5>
+            </div>
+            <div class="card-body">
+                <div class="border" style="height: 65vh; overflow-y: scroll;">
+                    <table class="table table-sm mb-0" id="tabla-registros">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Chofer</th>
+                                <th>Litros</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="100%">
+                                    <button class="btn btn-flat btn-block btn-primary" name="agregar_registro">Agregar registro</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <small class="text-muted">
+                    El registro de salida de dinero de la caja debe agregarla manualmente desde <b>cajas</b>
+                </small>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div id="modales" class="d-none">
+    <article id="modal_agregar_registro">
+        <div class="form-group">
+            <label for="">Transporte</label>
+            <input type="text" readonly class="form-control" name="transporte">
+        </div>
+        <div class="form-group">
+            <label for="">Chofer</label>
+            <select class="form-control" name="chofer"></select>
+        </div>
+        <div class="form-group">
+            <label for="">Litros</label>
+            <input type="number" autocomplete="off" class="form-control" name="litros">
+        </div>
+        <div class="form-group">
+            <label for="">Monto</label>
+            <input type="number" autocomplete="off" class="form-control" name="monto">
+        </div>
+        <button class="btn btn-primary btn-flat" name="registrar">Registrar</button>
+    </article>
+</div>
+<script src="/scripts/Cajas.js"></script>
+<script>
+    var cajas = null;
+    window.onload = () =>{
+        cajas = new Cajas(true);
+    }
+</script>

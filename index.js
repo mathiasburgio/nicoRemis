@@ -85,6 +85,7 @@ const clientes = require("./src/models/Clientes");
 const cajas = require("./src/models/Cajas");
 const viajes = require("./src/models/Viajes");
 const resumen = require("./src/models/Resumen");
+const combustible = require("./src/models/Combustible");
 
 //cargo las conexiones
 var _conn = null;
@@ -99,6 +100,7 @@ db1.getConnection()
     cajas.setMongoose(conn);
     viajes.setMongoose(conn);
     resumen.setMongoose(conn);
+    combustible.setMongoose(conn);
 });
 
 //asigno las rutas
@@ -109,6 +111,7 @@ expressApp.use( clientes.getRoutes() );
 expressApp.use( cajas.getRoutes() );
 expressApp.use( viajes.getRoutes() );
 expressApp.use( resumen.getRoutes() );
+expressApp.use( combustible.getRoutes() );
 
 expressApp.get(["/", "/inicio", "/index", "/home"], async (req, res)=>{
     let now = fechas.getNow();

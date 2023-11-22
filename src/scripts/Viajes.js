@@ -12,6 +12,10 @@ class Viajes{
         this.choferes = (await $.get({url: "/choferes/get-list"})).list;
         this.transportes = (await $.get({url: "/transportes/get-list"})).list;
 
+        G.sort(this.clientes);
+        G.sort(this.choferes);
+        G.sort(this.transportes);
+
         $("[name='cliente']").html( `<option value="0" selected>-SELECCIONAR-</option>` + G.getOptions({arr: this.clientes, value: "_id", label: "nombre"}) )
         $("[name='chofer']").html( `<option value="0" selected>-SELECCIONAR-</option>` + G.getOptions({arr: this.choferes.filter(x=>x.activo), value: "_id", label: "nombre"}) )
         $("[name='transporte']").html( `<option value="0" selected>-SELECCIONAR-</option>` + G.getOptions({arr: this.transportes.filter(x=>x.activo), value: "_id", label: "nombre"}) )
@@ -21,6 +25,7 @@ class Viajes{
             if( this.listOrigenDestino.includes( vx.origen ) == false) this.listOrigenDestino.push(vx.origen);
             if( this.listOrigenDestino.includes( vx.destino ) == false) this.listOrigenDestino.push(vx.destino);
         });
+        this.listOrigenDestino.sort();
         $("[name='origen']").html(`<option value="0" selected>-SELECCIONAR-</option>` + G.getOptionsV1(this.listOrigenDestino));
         $("[name='destino']").html(`<option value="0" selected>-SELECCIONAR-</option>` + G.getOptionsV1(this.listOrigenDestino));
 
