@@ -191,7 +191,7 @@ class Clientes{
             if(vx.estado == 3 && vx.cobrado == false){
                 tbody += `<tr _id="${vx._id}">
                     <td><i class="fas fa-square"></i></td>
-                    <td><small>${fechas.parse2(vx.fecha, "ARG_FECHA_HORA")}</small></td>
+                    <td><small>${fechas.parse2(vx.fechaPartida, "ARG_FECHA_HORA")}</small></td>
                     <td>${vx.origen}</td>
                     <td>${vx.destino}</td>
                     <td class="text-right">${vx.valorViaje}</td>
