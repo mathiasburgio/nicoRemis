@@ -13,7 +13,7 @@ const combustibleSchema = new mongoose.Schema({
     chofer: oid,
     litros: Number,
     monto: Number,
-    tipo: Number //1-Gasoil caro, 2-Gasoil barato, 3-Nafta
+    tipo: Number //0-Gasoil caro, 1-Gasoil barato, 2-Nafta cara, 3-Nafta barata
 });
 
 router.get("/combustible", async (req, res)=>{
@@ -44,7 +44,7 @@ router.post("/combustible/save", async(req, res)=>{
         let registro = myMongo.model("Combustible")({
             fecha: new Date(),
             transporte: req.fields.tid,
-            chofer: req.fields.cid,
+            //chofer: req.fields.cid,
             litros: req.fields.litros,
             monto: req.fields.monto,
             tipo: req.fields.tipo

@@ -29,9 +29,10 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>Fecha</th>
-                                <th>Chofer</th>
-                                <th>Litros</th>
-                                <th>Monto</th>
+                                <th class="d-none">Chofer</th>
+                                <th class="text-right">Tipo</th>
+                                <th class="text-right">Litros</th>
+                                <th class="text-right">Monto</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -58,9 +59,19 @@
             <label for="">Transporte</label>
             <input type="text" readonly class="form-control" name="transporte">
         </div>
-        <div class="form-group">
+        <div class="form-group d-none">
             <label for="">Chofer</label>
             <select class="form-control" name="chofer"></select>
+        </div>
+        <div class="form-group">
+            <label for="">Tipo</label>
+            <select class="form-control" name="tipo">
+                <option value="-1" selected>-SELECCIONAR-</option>
+                <option value="0">Gasoil caro</option>
+                <option value="1">Gasoil barato</option>
+                <option value="2">Nafta caro</option>
+                <option value="3">Nafta barato</option>
+            </select>
         </div>
         <div class="form-group">
             <label for="">Litros</label>
@@ -73,10 +84,10 @@
         <button class="btn btn-primary btn-flat" name="registrar">Registrar</button>
     </article>
 </div>
-<script src="/scripts/Cajas.js"></script>
+<script src="/scripts/Combustible.js"></script>
 <script>
-    var cajas = null;
+    var combustible = null;
     window.onload = () =>{
-        cajas = new Cajas(true);
+        combustible = new Combustible(true);
     }
 </script>
