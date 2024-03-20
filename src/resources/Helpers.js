@@ -309,4 +309,14 @@ class Helpers{
         };
         return ret + btoa(JSON.stringify(ret2));
     }
+
+    async getConf(llave = false){
+        let resp = await $.get({url: "/get-conf"});
+        if(resp.status == 1){
+            if(typeof resp.conf == "string") resp.conf = JSON.parse(resp.conf);
+            console.log(resp.conf);
+            if(llave == false) return resp.conf;
+            return resp.conf[llave] || null;
+        }
+    }
 }
