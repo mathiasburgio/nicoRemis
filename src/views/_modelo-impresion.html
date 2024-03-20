@@ -26,6 +26,13 @@
                 })
             }
 
+            console.log(params);
+            if(params.tableFontSize){
+                Array.from(document.querySelectorAll("table")).forEach(t=>{
+                    t.style.fontSize = params.tableFontSize;
+                })
+            }
+
 
             setTimeout(()=>{
                 window.print();
