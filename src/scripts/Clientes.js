@@ -162,17 +162,18 @@ class Clientes{
             clon.find("tfoot").remove();
 
             let encabezado= `<h3>RESUMEN CLIENTE -> ${this.crud.element.nombre}</h3>`
-
             let response = await $.post({
                 url: "/exportar-documento",
                 data: {
                     contenido: encabezado + clon.html()
                 }
             })
+
+            let tableFontSize = (await G.getConf("impresion-table-font-size")) || "1rem";
             let response2 = await $.post({
                 url: "/imprimir",
                 data: {
-                    parametros: "?imprimir=true&cerrar=true"
+                    parametros: "?imprimir=true&cerrar=true&tableFontSize=" + tableFontSize
                 }
             })
         });
